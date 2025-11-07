@@ -180,4 +180,70 @@ app.delete("/api/incidents/:sys_id", async (req, res) => {
   }
 });
 
+// ➕ CREATE (Insert) a new Incident
+app.post("/api/incidents", async (req, res) => {
+  const sid = req.cookies.sid;
+  const session = tokenStore.get(sid);
+  if (!session || !session.access_token)
+    return res.status(401).send("Not authenticated");
+
+  const { impact, urgency, short_description } = req.body;
+
+  try {
+    const r = await axios.post(
+      `${SN_INTANCE}/api/now/table/incident`,
+      {
+        impact,
+        urgency,
+        short_description,
+      },
+      { headers: { Authorization: `Bearer ${session.access_token}` } }
+    );
+
+    res.json({
+      message: "Incident created successfully",
+      result: r.data.result,
+    });
+  } catch (e) {
+    console.error("Insert failed:", e.response?.data || e.message);
+    res
+      .status(e.response?.status || 500)
+      .send(e.response?.data?.error?.message || "Failed to insert incident");
+  }
+});
+
+// ✏️ UPDATE (Edit) an existing Incident
+app.put("/api/incidents/:sys_id", async (req, res) => {
+  const sid = req.cookies.sid;
+  const session = tokenStore.get(sid);
+  if (!session || !session.access_token)
+    return res.status(401).send("Not authenticated");
+
+  const { sys_id } = req.params;
+  const { impact, urgency, short_description } = req.body;
+
+  try {
+    const r = await axios.patch(
+      `${SN_INTANCE}/api/now/table/incident/${sys_id}`,
+      {
+        impact,
+        urgency,
+        short_description,
+      },
+      { headers: { Authorization: `Bearer ${session.access_token}` } }
+    );
+
+    res.json({
+      message: "Incident updated successfully",
+      result: r.data.result,
+    });
+  } catch (e) {
+    console.error("Update failed:", e.response?.data || e.message);
+    res
+      .status(e.response?.status || 500)
+      .send(e.response?.data?.error?.message || "Failed to update incident");
+  }
+});
+
+
 app.listen(3001, () => console.log("BFF on 3001"));
