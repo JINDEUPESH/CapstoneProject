@@ -180,7 +180,7 @@ app.delete("/api/incidents/:sys_id", async (req, res) => {
   }
 });
 
-// ➕ CREATE (Insert) a new Incident
+
 app.post("/api/incidents", async (req, res) => {
   const sid = req.cookies.sid;
   const session = tokenStore.get(sid);
