@@ -14,6 +14,7 @@ export default function Home() {
   const { isLogged } = useContext(AuthContext);
   const [incidents, setIncidents] = useState([]);
 
+
   useEffect(() => {
     async function fetchData() {
       if (isLogged) {
@@ -27,6 +28,27 @@ export default function Home() {
 
     fetchData();
   }, [isLogged]);
+
+  const handleDelete = async (sys_id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this incident?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`http://localhost:3001/api/incidents/${sys_id}`, {
+        withCredentials: true,
+      });
+
+      // Update UI instantly
+      setIncidents((prev) => prev.filter((inc) => inc.sys_id !== sys_id));
+
+      alert("Incident deleted successfully!");
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("Failed to delete incident.");
+    }
+  };
 
   return (
     <>
@@ -64,6 +86,7 @@ export default function Home() {
                           sx={{ mt: 1, mx: 1 }}
                           variant="contained"
                           color="error"
+                          onClick={() => handleDelete(inc.sys_id)}
                         >
                           Delete
                         </Button>

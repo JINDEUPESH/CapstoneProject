@@ -154,4 +154,30 @@ app.get("/api/incidents", async (req, res) => {
   }
 });
 
+app.delete("/api/incidents/:sys_id", async (req, res) => {
+  const sid = req.cookies.sid;
+  const session = tokenStore.get(sid);
+  if(!session || !session.access_token) {
+    return res.status(401).send("Not Authenticated");
+  }
+  const {sys_id} = req.params;
+  try {
+    const r = await axios.delete(`${SN_INTANCE}/api/now/table/incident/${sys_id}`, {headers: {Authorization:`Bearer ${session.access_token}`}});
+
+    res.json({
+      message: "Incident Deleted Successfully",
+      sys_id : sys_id,
+      status: r.status,
+    })
+  } catch(e) {
+    if (e.response?.status === 404)
+      return res.status(404).send("Incident not found");
+    if (e.response?.status === 401)
+      return res.status(401).send("Unauthorized or token expired");
+
+    console.error("Delete failed:", e.response?.data || e.message);
+    res.status(500).send("Failed to delete incident");
+  }
+});
+
 app.listen(3001, () => console.log("BFF on 3001"));
