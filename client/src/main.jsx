@@ -5,6 +5,7 @@ import { ThemeProvider, CssBaseline } from '@mui/material'
 import { createTheme } from '@mui/material/styles'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './AuthProvider.jsx'
+import ThemeProviderWrapper from "./ThemeContext.jsx";
 
 const theme = createTheme({
   palette: {
@@ -18,13 +19,12 @@ const theme = createTheme({
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-    <CssBaseline />
-      <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </BrowserRouter>
-    </ThemeProvider>
-  </StrictMode>,
+  <ThemeProviderWrapper>
+    <BrowserRouter>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </BrowserRouter>
+  </ThemeProviderWrapper>
+</StrictMode>
 )
