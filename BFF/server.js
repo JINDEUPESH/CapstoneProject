@@ -25,7 +25,7 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const authEndpoint = `${SN_INTANCE}/oauth_auth.do`;
 const tokenEndpoint = `${SN_INTANCE}/oauth_token.do`;
 
-// in real-life we would use Redis here
+
 const tokenStore = new Map();
 
 function base64url(buf) {
@@ -212,7 +212,7 @@ app.post("/api/incidents", async (req, res) => {
   }
 });
 
-// ✏️ UPDATE (Edit) an existing Incident
+
 app.put("/api/incidents/:sys_id", async (req, res) => {
   const sid = req.cookies.sid;
   const session = tokenStore.get(sid);

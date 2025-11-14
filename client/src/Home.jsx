@@ -19,9 +19,9 @@ export default function Home() {
     urgency: "",
     short_description: "",
   });
-  const [editing, setEditing] = useState(null); // sys_id of record being edited
+  const [editing, setEditing] = useState(null); 
 
-  // Fetch incidents
+  
   useEffect(() => {
     async function fetchData() {
       if (isLogged) {
@@ -39,17 +39,16 @@ export default function Home() {
     fetchData();
   }, [isLogged]);
 
-  // Handle form field changes
+ 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Insert or update incident
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (editing) {
-        // Update existing record
+        
         await axios.put(
           `http://localhost:3001/api/incidents/${editing}`,
           formData,
@@ -57,20 +56,18 @@ export default function Home() {
         );
         alert("Incident updated successfully!");
       } else {
-        // Insert new record
+        
         await axios.post("http://localhost:3001/api/incidents", formData, {
           withCredentials: true,
         });
         alert("Incident inserted successfully!");
       }
 
-      // Refresh data
       const res = await axios.get("http://localhost:3001/api/incidents", {
         withCredentials: true,
       });
       setIncidents(res.data.result || []);
 
-      // Reset form
       setFormData({ impact: "", urgency: "", short_description: "" });
       setEditing(null);
     } catch (err) {
@@ -79,7 +76,6 @@ export default function Home() {
     }
   };
 
-  // Delete record
   const handleDelete = async (sys_id) => {
     try {
       await axios.delete(`http://localhost:3001/api/incidents/${sys_id}`, {
@@ -93,7 +89,6 @@ export default function Home() {
     }
   };
 
-  // Edit record (populate form)
   const handleEdit = (inc) => {
     setFormData({
       impact: inc.impact || "",
@@ -109,7 +104,7 @@ export default function Home() {
         <Stack spacing={3}>
           <Typography variant="h5">Incident Management</Typography>
 
-          {/* 🚀 Form Section */}
+         
           <form onSubmit={handleSubmit}>
             <Stack
               direction="row"
@@ -145,7 +140,7 @@ export default function Home() {
             </Stack>
           </form>
 
-          {/* 🧾 Incident Records */}
+         
           <Grid container spacing={3} justifyContent="center">
             {incidents.map((inc) => (
               <Grid key={inc.sys_id} item>

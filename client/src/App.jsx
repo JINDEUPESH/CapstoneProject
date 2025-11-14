@@ -4,16 +4,24 @@ import {
   Typography,
   Container,
   IconButton,
+  Box,
 } from "@mui/material";
 import { Link, Routes, Route, Outlet } from "react-router-dom";
 import Home from "./Home.jsx";
 import About from "./About.jsx";
 import NotFound from "./NotFound.jsx";
-import styles from "./App.module.css";
 import { AuthContext } from "./AuthProvider.jsx";
 import { ThemeContext } from "./ThemeContext.jsx";
 import { useContext } from "react";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
+
+const linkStyle = {
+  textDecoration: "none",
+  color: "inherit",
+  margin: "0 1rem",
+  fontWeight: 500,
+  transition: "0.3s",
+};
 
 function App() {
   function Layout() {
@@ -22,45 +30,54 @@ function App() {
 
     return (
       <>
-        <AppBar position="fixed">
+        <AppBar
+          position="fixed"
+          sx={{
+            background: "rgba(20, 20, 20, 0.5)",
+            backdropFilter: "blur(12px)",
+            borderBottom: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: "0",
+          }}
+          elevation={0}
+        >
           <Toolbar sx={{ justifyContent: "space-between" }}>
-            <Typography>Company Name</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              Bright Speed 
+            </Typography>
 
-            <div>
+            <Box display="flex" alignItems="center">
               {isLogged ? (
                 <>
-                  <Link className={styles.link} to="/">
+                  <Link to="/" style={linkStyle}>
                     Home
                   </Link>
-                  <Link className={styles.link} to="/about">
+                  <Link to="/about" style={linkStyle}>
                     About
                   </Link>
-                  <Link className={styles.link} to="/does-not-exist">
+                  <Link to="/does-not-exist" style={linkStyle}>
                     404 Test
                   </Link>
-                  <Link className={styles.link} onClick={logout}>
+                  <Link
+                    style={{ ...linkStyle, color: "#FF5C8D" }}
+                    onClick={logout}
+                  >
                     Logout
                   </Link>
                 </>
               ) : (
-                <Link className={styles.link} onClick={login}>
+                <Link style={linkStyle} onClick={login}>
                   Login with ServiceNow
                 </Link>
               )}
 
-              <IconButton
-                sx={{ ml: 2 }}
-                color="inherit"
-                onClick={toggleTheme}
-                title={`Switch to ${mode === "light" ? "dark" : "light"} mode`}
-              >
+              <IconButton onClick={toggleTheme} color="inherit">
                 {mode === "light" ? <Brightness4 /> : <Brightness7 />}
               </IconButton>
-            </div>
+            </Box>
           </Toolbar>
         </AppBar>
 
-        <Container sx={{ mt: 10 }}>
+        <Container sx={{ mt: 12, mb: 6 }}>
           <Outlet />
         </Container>
       </>
