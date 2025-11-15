@@ -1,98 +1,74 @@
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Container,
-  IconButton,
-  Box,
-} from "@mui/material";
-import { Link, Routes, Route, Outlet } from "react-router-dom";
-import Home from "./Home.jsx";
-import About from "./About.jsx";
-import NotFound from "./NotFound.jsx";
-import { AuthContext } from "./AuthProvider.jsx";
-import { ThemeContext } from "./ThemeContext.jsx";
-import { useContext } from "react";
-import { Brightness4, Brightness7 } from "@mui/icons-material";
+import React, { useContext } from 'react'
+import { Routes, Route, Outlet, Link as RouterLink } from 'react-router-dom'
+import Home from './Home.jsx'
+import About from './About.jsx'
+import NotFound from './NotFound.jsx'
+import { AppBar, Toolbar, Typography, IconButton, Container, Box } from '@mui/material'
+import { Brightness4, Brightness7 } from '@mui/icons-material'
+import { AuthContext } from './AuthProvider.jsx'
+import { ThemeContext } from './ThemeContext.jsx'
 
-const linkStyle = {
-  textDecoration: "none",
-  color: "inherit",
-  margin: "0 1rem",
-  fontWeight: 500,
-  transition: "0.3s",
-};
 
-function App() {
-  function Layout() {
-    const { isLogged, logout, login } = useContext(AuthContext);
-    const { mode, toggleTheme } = useContext(ThemeContext);
+export default function App() {
+function Layout() {
+const { isLogged, login, logout } = useContext(AuthContext)
+const { mode, toggleTheme } = useContext(ThemeContext)
 
-    return (
-      <>
-        <AppBar
-          position="fixed"
-          sx={{
-            background: "rgba(20, 20, 20, 0.5)",
-            backdropFilter: "blur(12px)",
-            borderBottom: "1px solid rgba(255,255,255,0.1)",
-            borderRadius: "0",
-          }}
-          elevation={0}
-        >
-          <Toolbar sx={{ justifyContent: "space-between" }}>
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              Bright Speed 
-            </Typography>
 
-            <Box display="flex" alignItems="center">
-              {isLogged ? (
-                <>
-                  <Link to="/" style={linkStyle}>
-                    Home
-                  </Link>
-                  <Link to="/about" style={linkStyle}>
-                    About
-                  </Link>
-                  <Link to="/does-not-exist" style={linkStyle}>
-                    404 Test
-                  </Link>
-                  <Link
-                    style={{ ...linkStyle, color: "#FF5C8D" }}
-                    onClick={logout}
-                  >
-                    Logout
-                  </Link>
-                </>
-              ) : (
-                <Link style={linkStyle} onClick={login}>
-                  Login with ServiceNow
-                </Link>
-              )}
+return (
+<>
+<AppBar
+  position="fixed"
+  elevation={0}
+  sx={{
+    backdropFilter: "blur(8px)",
+    background: mode === "light"
+      ? "rgba(255,255,255,0.8)" // Light glossy effect
+      : "rgba(0,0,0,0.3)",      // Dark glossy effect
+      color: mode === "light" ? "#000" : "#fff",
+    borderBottom: "1px solid rgba(255,255,255,0.1)"
+  }}
+>
+<Toolbar sx={{ justifyContent: 'space-between' }}>
+<Box display="flex" alignItems="center" gap={2}>
+<Typography variant="h6" sx={{ fontWeight: 700 }}>BrightSpeed</Typography>
+<Typography variant="body2" color="text.secondary">Incident Dashboard</Typography>
+</Box>
+<Box>
+{isLogged ? (
+<>
+<RouterLink to="/" style={{ textDecoration: 'none', color: mode === "light" ? "#111" : "#fff", marginRight: 16 }}>Home</RouterLink>
+<RouterLink to="/about" style={{ textDecoration: 'none', color: mode === "light" ? "#111" : "#fff", marginRight: 16 }}>About</RouterLink>
+<a onClick={logout} style={{ cursor: 'pointer', marginRight: 12 }}>Logout</a>
+</>
+) : (
+<a onClick={login} style={{ cursor: 'pointer', marginRight: 12 }}>Login with ServiceNow</a>
+)}
 
-              <IconButton onClick={toggleTheme} color="inherit">
-                {mode === "light" ? <Brightness4 /> : <Brightness7 />}
-              </IconButton>
-            </Box>
-          </Toolbar>
-        </AppBar>
 
-        <Container sx={{ mt: 12, mb: 6 }}>
-          <Outlet />
-        </Container>
-      </>
-    );
-  }
+<IconButton onClick={toggleTheme} color="inherit" title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}>
+{mode === 'light' ? <Brightness4/> : <Brightness7/>}
+</IconButton>
+</Box>
+</Toolbar>
+</AppBar>
 
-  return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="*" element={<NotFound />} />
-      </Route>
-    </Routes>
-  );
+
+<Container maxWidth="xl" sx={{ mt: 12 }}>
+<Outlet />
+</Container>
+</>
+)
 }
 
-export default App;
+
+return (
+<Routes>
+<Route element={<Layout/>}>
+<Route path="/" element={<Home/>} />
+<Route path="/about" element={<About/>} />
+<Route path="*" element={<NotFound/>} />
+</Route>
+</Routes>
+)
+}

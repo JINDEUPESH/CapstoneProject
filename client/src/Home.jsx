@@ -13,6 +13,7 @@ import axios from "axios";
 
 export default function Home() {
   const { isLogged } = useContext(AuthContext);
+  const [searchNumber, setSearchNumber] = useState("");
   const [incidents, setIncidents] = useState([]);
   const [formData, setFormData] = useState({
     impact: "",
@@ -98,6 +99,12 @@ export default function Home() {
     setEditing(inc.sys_id);
   };
 
+  const filteredIncidents = incidents.filter((inc) =>
+    searchNumber === "" ||
+    inc.number.toLowerCase().includes(searchNumber.toLowerCase())
+  );
+  
+
   return (
     <>
       {isLogged && (
@@ -113,19 +120,35 @@ export default function Home() {
               justifyContent="center"
             >
               <TextField
+                select
                 label="Impact"
                 name="impact"
                 value={formData.impact}
                 onChange={handleChange}
                 size="small"
-              />
+                SelectProps={{ native: true }}
+              >
+                <option value=""></option>
+                <option value="1">1-High</option>
+                <option value="2">2-Moderate</option>
+                <option value="3">3-Low</option>
+              </TextField>
+
               <TextField
+                select
                 label="Urgency"
                 name="urgency"
                 value={formData.urgency}
                 onChange={handleChange}
                 size="small"
-              />
+                SelectProps={{ native: true }}
+              >
+                <option value=""> </option>
+                <option value="1">1-High</option>
+                <option value="2">2-Moderate</option>
+                <option value="3">3-Low</option>
+              </TextField>
+
               <TextField
                 label="Short Description"
                 name="short_description"
@@ -137,12 +160,21 @@ export default function Home() {
               <Button type="submit" variant="contained" color="primary">
                 {editing ? "Update Incident" : "Insert Incident"}
               </Button>
+              <TextField
+            label="Search Incident Number"
+            value={searchNumber}
+            onChange={(e) => setSearchNumber(e.target.value)}
+            size="small"
+            sx={{ width: 250 }}
+          />
             </Stack>
           </form>
-
+          
+          
          
           <Grid container spacing={3} justifyContent="center">
-            {incidents.map((inc) => (
+            
+            {filteredIncidents.map((inc) => (
               <Grid key={inc.sys_id} item>
                 <Card sx={{ width: 300, height: 200 }}>
                   <CardContent>
